@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
+import io.confluent.servicebroker.controlpane.jaas.LoginModule;
+
 public class ClusterProviderConfiguration {
 	private String providerName;
 	private Map<String, String> clientProperties;
@@ -14,6 +16,11 @@ public class ClusterProviderConfiguration {
 
 	@NestedConfigurationProperty
 	private ClusterCredentials genericCredentials;
+
+	private LoginModule loginModule;
+
+	@NestedConfigurationProperty
+	private ZookeeperConfiguration zookeeper;
 
 	public String getProviderName() {
 		return providerName;
@@ -45,5 +52,21 @@ public class ClusterProviderConfiguration {
 
 	public void setGenericCredentials(ClusterCredentials genericCredentials) {
 		this.genericCredentials = genericCredentials;
+	}
+
+	public LoginModule getLoginModule() {
+		return loginModule;
+	}
+
+	public void setLoginModule(LoginModule loginModule) {
+		this.loginModule = loginModule;
+	}
+
+	public ZookeeperConfiguration getZookeeper() {
+		return zookeeper;
+	}
+
+	public void setZookeeper(ZookeeperConfiguration zookeeper) {
+		this.zookeeper = zookeeper;
 	}
 }

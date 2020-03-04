@@ -59,7 +59,7 @@ public class CreateServiceInstanceBindingTransformer implements
 
 				.build();
 
-		listener.notifySubscriber(serviceInstanceId, response);
+		listener.notifySubscriber(bindingId, response);
 
 		return new KeyValue<>(serviceInstanceId, new CreateServiceBindingResult(false, null));
 	}
@@ -74,7 +74,7 @@ public class CreateServiceInstanceBindingTransformer implements
 	}
 
 	@Override
-	public KeyValue<String, CreateServiceBindingResult> transform(String bindingId,
+	public KeyValue<String, CreateServiceBindingResult> transform(String serviceInstanceId,
 			CreateKafkaServiceInstanceBindingRequest request) {
 		String providedProvidionerType = Optional.ofNullable(request.getPlan().getMetadata().get("accountprovider"))
 				.map(Object::toString).orElse(null);
@@ -82,7 +82,7 @@ public class CreateServiceInstanceBindingTransformer implements
 			LOGGER.error("Plan {} for service {} is invalid. Metadata \"accountProvider\" is undefined",
 					request.getPlan().getName(), request.getServiceDefinition().getName());
 
-			return failedResponse(request.getServiceInstanceId(), bindingId);
+			return failedResponse(request.getServiceInstanceId(), request.getBindingId());
 		}
 
 		ProvisionerType accountProviderType;
@@ -91,7 +91,7 @@ public class CreateServiceInstanceBindingTransformer implements
 		} catch (IllegalArgumentException ex) {
 			LOGGER.error(providedProvidionerType + " is not a valid account provider type", ex);
 
-			return failedResponse(request.getServiceInstanceId(), bindingId);
+			return failedResponse(request.getServiceInstanceId(), request.getBindingId());
 		}
 
 		AccountProvisioner accountProvider = accountProviders.get(accountProviderType);
@@ -99,21 +99,21 @@ public class CreateServiceInstanceBindingTransformer implements
 			LOGGER.error("Failed to to proccess binding {}. Account provider {} is not supported",
 					request.getBindingId(), accountProviderType);
 
-			return failedResponse(request.getServiceInstanceId(), bindingId);
+			return failedResponse(request.getServiceInstanceId(), request.getBindingId());
 		}
 
 		String requestPrincipalProvider = request.getContext().getPlatform();
 		if (requestPrincipalProvider == null) {
 			LOGGER.error("Platform is undefined in the request context.");
 
-			return failedResponse(request.getServiceInstanceId(), bindingId);
+			return failedResponse(request.getServiceInstanceId(), request.getBindingId());
 		}
 
 		PrincipalProvider principalProvider = principalProviders.get(requestPrincipalProvider);
 		if (principalProvider == null) {
 			LOGGER.error("No principal provider are available for {} platform.", requestPrincipalProvider);
 
-			return failedResponse(request.getServiceInstanceId(), bindingId);
+			return failedResponse(request.getServiceInstanceId(), request.getBindingId());
 		}
 
 		String principal;
@@ -125,7 +125,7 @@ public class CreateServiceInstanceBindingTransformer implements
 			LOGGER.error("Failed to create binding " + request.getBindingId()
 					+ ". Principal could not be extracted from request.", ex);
 
-			return failedResponse(request.getServiceInstanceId(), bindingId);
+			return failedResponse(request.getServiceInstanceId(), request.getBindingId());
 		}
 
 		ServiceInstance serviceInstance = Optional.ofNullable(instanceStore.get(request.getServiceInstanceId()))
@@ -135,7 +135,7 @@ public class CreateServiceInstanceBindingTransformer implements
 			LOGGER.error("Failed to to proccess binding {}. Service instance {} does not exist", request.getBindingId(),
 					request.getServiceInstanceId());
 
-			return failedResponse(request.getServiceInstanceId(), bindingId);
+			return failedResponse(request.getServiceInstanceId(), request.getBindingId());
 		}
 
 		listener.notifySubscriber(request.getBindingId(), CreateServiceInstanceAppBindingResponse.builder()

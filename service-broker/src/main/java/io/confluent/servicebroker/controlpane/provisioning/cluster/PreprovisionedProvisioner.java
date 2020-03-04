@@ -24,11 +24,9 @@ public class PreprovisionedProvisioner implements ClusterProvisioner {
 		this.clusterProviderConfigurations = controlPaneConfiguration.getClusterProviders().stream()
 				.collect(Collectors.toMap(ClusterProviderConfiguration::getProviderName,
 						clusterProviderConfiguration -> clusterProviderConfiguration));
-
 	}
 
 	private void assertClusterProviderConfiguration(ClusterProviderConfiguration clusterProviderConfiguration) {
-		assertProperty(clusterProviderConfiguration, "ssl.endpoint.identification.algorithm");
 		assertProperty(clusterProviderConfiguration, "sasl.mechanism");
 		assertProperty(clusterProviderConfiguration, "request.timeout.ms");
 		assertProperty(clusterProviderConfiguration, "bootstrap.servers");

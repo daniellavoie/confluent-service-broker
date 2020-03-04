@@ -39,7 +39,7 @@ import io.confluent.servicebroker.it.model.Topic;
 import io.confluent.servicebroker.it.model.TopicACL;
 
 @SpringBootTest(classes = ServiceBrokerIntegrationTests.class)
-public class ServiceInstanceLifecycleTest {
+public abstract class ServiceInstanceLifecycleTest {
 	@Autowired
 	private WebClient webClient;
 
@@ -100,6 +100,8 @@ public class ServiceInstanceLifecycleTest {
 		}
 	}
 
+	protected abstract Plan getPlan(ServiceDefinition serviceDefinition);
+
 	@Test
 	public void assertServiceInstanceLifecycle() throws InterruptedException, ExecutionException {
 		Catalog catalog = webClient.get().uri("/v2/catalog").exchange()
@@ -109,9 +111,7 @@ public class ServiceInstanceLifecycleTest {
 
 		ServiceDefinition serviceDefinition = catalog.getServiceDefinitions().get(0);
 
-		Assertions.assertEquals(1, serviceDefinition.getPlans().size());
-
-		Plan plan = serviceDefinition.getPlans().get(0);
+		Plan plan = getPlan(serviceDefinition);
 
 		ClusterConfiguration userConfiguration = new ClusterConfiguration(new HashMap<>(),
 				Arrays.asList(new Topic("topic-1", "test-service", new HashMap<>(),
@@ -152,7 +152,8 @@ public class ServiceInstanceLifecycleTest {
 		CreateServiceInstanceResponse createServiceInstanceResponse = webClient.put()
 				.uri("/v2/service_instances/" + serviceInstanceId + "?accepts_incomplete=true")
 				.bodyValue(createServiceInstance).exchange()
-				.flatMap(response -> response.bodyToMono(CreateServiceInstanceResponse.class)).block();
+				.flatMap(response -> response.bodyToMono(CreateServiceInstanceResponse.class))
+				.block(Duration.ofSeconds(5));
 
 		Assertions.assertEquals(OperationState.IN_PROGRESS.toString(), createServiceInstanceResponse.getOperation());
 

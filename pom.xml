@@ -37,6 +37,11 @@
         <artifactId>cloudfoundry-operations</artifactId>
         <version>4.3.0.RELEASE</version>
       </dependency>
+      <dependency>
+        <groupId>org.apache.zookeeper</groupId>
+        <artifactId>zookeeper</artifactId>
+        <version>3.5.7</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 </project>
