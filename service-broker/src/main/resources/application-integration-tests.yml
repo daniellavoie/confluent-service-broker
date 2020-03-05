@@ -4,7 +4,7 @@ confluent.service-broker.controlpane.cluster-providers[0].client-properties.retr
 confluent.service-broker.controlpane.cluster-providers[0].client-properties.sasl.mechanism: SCRAM-SHA-512
 confluent.service-broker.controlpane.cluster-providers[0].client-properties.security.protocol: SASL_PLAINTEXT
 confluent.service-broker.controlpane.cluster-providers[0].client-properties.ssl.endpoint.identification..algorithm: https
-confluent.service-broker.controlpane.cluster-providers[0].credentials[0].name: my-org/my-space/confluent-service-broker-sample-app
+confluent.service-broker.controlpane.cluster-providers[0].credentials[0].name: my-org/my-space/a-mocked-application
 confluent.service-broker.controlpane.cluster-providers[0].credentials[0].password: test-user-secret
 confluent.service-broker.controlpane.cluster-providers[0].credentials[0].username: test-user
 confluent.service-broker.controlpane.cluster-providers[0].login-module: SCRAM

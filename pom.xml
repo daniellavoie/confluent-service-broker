@@ -12,7 +12,6 @@
   
   <modules>
   	<module>service-broker</module>
-  	<module>integration-tests</module>
   	<module>sample-app</module>
   </modules>
   
